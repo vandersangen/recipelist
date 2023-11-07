@@ -7,6 +7,8 @@ import {EditComponent as ShoppingListEditComponent} from "./shopping-list/edit/e
 import {NgModule} from "@angular/core";
 import {RecipeEditComponent} from "./recipe-book/recipe-edit/recipe-edit.component";
 import {RecipesResolverService} from "./recipe-book/recipes-resolver.service";
+import {ShoppinglistResolverService} from "./shopping-list/shoppinglist-resolver.service";
+import {ShoppinglistService} from "./shopping-list/shoppinglist.service";
 
 
 const routes: Route[] = [
@@ -16,19 +18,14 @@ const routes: Route[] = [
     component: RecipeBookComponent,
     children: [
       {path: 'add', component: RecipeEditComponent},
-      {path: ':index/edit', component: RecipeEditComponent, resolve: [RecipesResolverService]},
-      {path: ':index', component: RecipeBookDetailComponent, resolve: [RecipesResolverService]}
+      {path: ':index/edit', component: RecipeEditComponent, resolve: [RecipesResolverService, ShoppinglistResolverService]},
+      {path: ':index', component: RecipeBookDetailComponent, resolve: [RecipesResolverService, ShoppinglistResolverService]}
     ]
   },
   {
     path: 'shopping-list',
     component: ShoppingListComponent,
-    children: [
-      {
-        path: ':name/edit',
-        component: ShoppingListEditComponent
-      }
-    ]
+    resolve: [ShoppinglistResolverService, RecipesResolverService],
   }
 ];
 

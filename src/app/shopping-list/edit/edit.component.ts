@@ -31,7 +31,6 @@ export class EditComponent implements OnInit, OnDestroy {
     }
 
     let form = this.ngForm.form;
-
     let ingredient = this.shoppingListService.getIngredients().find(t => t.name === form.get('name')?.value);
     if (!ingredient) {
       this.shoppingListService.addIngredient(

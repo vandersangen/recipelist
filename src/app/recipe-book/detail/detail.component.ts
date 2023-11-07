@@ -26,7 +26,7 @@ export class DetailComponent implements OnInit {
       return;
     }
 
-    this.shoppingListService.addIngredients(selectedRecipe.ingredients)
+    this.shoppingListService.addIngredients(selectedRecipe.ingredients.slice());
   }
 
   ngOnInit(): void {

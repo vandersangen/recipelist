@@ -3,6 +3,7 @@ import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/rou
 import {Recipe} from "./recipe.model";
 import {Observable} from "rxjs";
 import {RecipeService} from "./recipe.service";
+import {ShoppinglistService} from "../shopping-list/shoppinglist.service";
 
 @Injectable({providedIn: 'root'})
 export class RecipesResolverService implements Resolve<Recipe[]> {
