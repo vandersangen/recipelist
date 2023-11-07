@@ -27,7 +27,7 @@ export class ShoppinglistService {
 
   addIngredients(ingredients: Ingredient[]) {
     console.log(this.ingredients);
-    for (let ingredient of ingredients) {
+    for (let ingredient of ingredients.slice()) {
       let foundIngredient = this.ingredients.find(t => t.name == ingredient.name);
       if (foundIngredient) {
         foundIngredient.amount += ingredient.amount;
@@ -58,14 +58,6 @@ export class ShoppinglistService {
       "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/ingredients.json",
     )
       .pipe(
-        // map(result => {
-        //   return result.map(recipe => {
-        //     return {
-        //       ...recipe,
-        //       ingredients: recipe.ingredients? recipe.ingredients: [],
-        //     }
-        //   });
-        // }),
         tap((result: Ingredient[]) => {
           this.ingredients = result ?? [];
           this.ingredientsChangedSubject.next(this.getIngredients());

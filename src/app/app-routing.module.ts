@@ -16,10 +16,11 @@ const routes: Route[] = [
   {
     path: 'recipe-book',
     component: RecipeBookComponent,
+    resolve: [RecipesResolverService, ShoppinglistResolverService],
     children: [
       {path: 'add', component: RecipeEditComponent},
-      {path: ':index/edit', component: RecipeEditComponent, resolve: [RecipesResolverService, ShoppinglistResolverService]},
-      {path: ':index', component: RecipeBookDetailComponent, resolve: [RecipesResolverService, ShoppinglistResolverService]}
+      {path: ':index/edit', component: RecipeEditComponent},
+      {path: ':index', component: RecipeBookDetailComponent}
     ]
   },
   {
