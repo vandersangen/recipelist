@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+
+  frontend:
+    image: larsvandersangen/recipelist:latest
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./:/usr/src/app
+    environment:
+      SHELL: /bin/bash
+      NODE_ENV: development
+    networks:
+      - app-network-frontend-angular
+#    entrypoint: npm install
+#    entrypoint: ng new angular-course --directory ./
+    entrypoint: ng serve --host 0.0.0.0 --configuration=development
+#    env_file:
+#      - .env
+
+
+# Docker Networks
+networks:
+  app-network-frontend-angular:
+    name: app-network-frontend-angular
+    driver: bridge

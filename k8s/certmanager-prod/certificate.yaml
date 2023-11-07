@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+
+kind: Certificate
+metadata:
+  name: recipelist.vandersangen.dev
+spec:
+  secretName: recipelist.vandersangen.dev
+  issuerRef:
+    # Set Issuer of certificate; letsencrypt-prod is prod version of lets-encrypt
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  # Side note; commonName must be present in dnsNames
+  commonName: recipelist.vandersangen.dev
+  dnsNames:
+    - recipelist.vandersangen.dev

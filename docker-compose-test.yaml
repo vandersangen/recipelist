@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+
+  frontend:
+    image: larsvandersangen/recipelist:latest
+    platform: linux/amd64
+    build:
+      context: .
+      target: deployed
+      dockerfile: ./Dockerfile
+      args:
+        NODE_ENV: test
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./:/usr/src/app
+      - ~/.gitconfig:/etc/gitconfig
+    networks:
+      - app-network-frontend
+
+# Docker Networks
+networks:
+  app-network-frontend:
+    name: app-network-frontend
+    driver: bridge

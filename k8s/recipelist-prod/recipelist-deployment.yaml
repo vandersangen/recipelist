@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipelist-deployment
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      folder: recipelist-prod
+  template:
+    metadata:
+      labels:
+        folder: recipelist-prod
+
+    spec:
+      restartPolicy: Always
+
+      containers:
+
+        - name: recipelist-prod
+          image: larsvandersangen/recipelist:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

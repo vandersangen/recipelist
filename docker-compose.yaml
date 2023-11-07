@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+
+  frontend:
+    image: larsvandersangen/recipelist:latest
+    platform: linux/amd64
+    build:
+      context: .
+      target: deployed
+      dockerfile: ./Dockerfile
+      args:
+        NODE_ENV: production
+    ports:
+      - "4200:4200"
+    environment:
+      SHELL: /bin/bash
+      NODE_ENV: production
+    networks:
+      - app-network-frontend
+#    env_file:
+#      - .env
+
+
+# Docker Networks
+networks:
+  app-network-frontend:
+    name: app-network-frontend
+    driver: bridge
