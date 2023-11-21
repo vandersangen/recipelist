@@ -6,17 +6,20 @@
 
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li routerLinkActive="active" ><a routerLink="/recipe-book">Recipes</a></li>
-        <li routerLinkActive="active"><a routerLink="/shopping-list">Shopping list</a></li>
+        <li routerLinkActive="active" *ngIf="this.isAuthenticated === true"><a routerLink="/recipe-book">Recipes</a></li>
+        <li routerLinkActive="active" *ngIf="this.isAuthenticated === true"><a routerLink="/shopping-list">Shopping list</a></li>
+
+        <li routerLinkActive="active" *ngIf="this.isAuthenticated === false"><a routerLink="/auth">Login</a></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
+        <li style="cursor: pointer" *ngIf="this.isAuthenticated === true" (click)="this.logout()"><a>Logout</a></li>
+
         <li class="dropdown" appDropdown>
-          <a class="dropdown-toggle" role="button">
+          <a class="dropdown-toggle" role="button" *ngIf="this.isAuthenticated === true">
             Manage
             <span class="caret"></span>
           </a>
-
           <ul class="dropdown-menu">
             <li (click)="this.saveData()"><a>Save data</a></li>
             <li (click)="this.fetchData()"><a>Fetch data</a></li>

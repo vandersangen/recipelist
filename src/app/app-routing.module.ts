@@ -9,12 +9,15 @@ import {RecipeEditComponent} from "./recipe-book/recipe-edit/recipe-edit.compone
 import {RecipesResolverService} from "./recipe-book/recipes-resolver.service";
 import {ShoppinglistResolverService} from "./shopping-list/shoppinglist-resolver.service";
 import {ShoppinglistService} from "./shopping-list/shoppinglist.service";
+import {AuthComponent} from "./auth/auth.component";
+import {AuthGuard} from "./auth/auth.guard";
 
 
 const routes: Route[] = [
   {path: '', redirectTo: 'recipe-book', pathMatch: 'full'},
   {
     path: 'recipe-book',
+    canActivate: [AuthGuard],
     component: RecipeBookComponent,
     resolve: [RecipesResolverService, ShoppinglistResolverService],
     children: [
@@ -25,8 +28,13 @@ const routes: Route[] = [
   },
   {
     path: 'shopping-list',
+    canActivate: [AuthGuard],
     component: ShoppingListComponent,
     resolve: [ShoppinglistResolverService, RecipesResolverService],
+  },
+  {
+    path: 'auth',
+    component: AuthComponent,
   }
 ];
 

@@ -15,11 +15,16 @@ import {DropdownDirective} from './shared/dropdown.directive';
 import {RecipeService} from "./recipe-book/recipe.service";
 import {ShoppinglistService} from "./shopping-list/shoppinglist.service";
 import {AppRoutingModule} from "./app-routing.module";
-import { RecipeEditComponent } from './recipe-book/recipe-edit/recipe-edit.component';
-import {HttpClientModule} from "@angular/common/http";
+import {RecipeEditComponent} from './recipe-book/recipe-edit/recipe-edit.component';
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {AuthComponent} from "./auth/auth.component";
+import {LoadingSpinnerComponent} from "./shared/loading-spinner.component";
+import {AuthInterceptorService} from "./auth/auth-interceptor.service";
 
 @NgModule({
   declarations: [
+    LoadingSpinnerComponent,
+    AuthComponent,
     AppComponent,
     HeaderComponent,
     RecipeBookComponent,
@@ -42,6 +47,11 @@ import {HttpClientModule} from "@angular/common/http";
   providers: [
     RecipeService,
     ShoppinglistService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

@@ -1,8 +1,10 @@
 import {Ingredient} from "../shared/model/ingredient.model";
 import {Injectable} from "@angular/core";
-import {Subject, tap} from "rxjs";
+import {exhaustMap, map, Subject, take, tap} from "rxjs";
 import {Recipe} from "../recipe-book/recipe.model";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {AuthService} from "../auth/auth.service";
+import {UserModel} from "../auth/user.model";
 
 @Injectable()
 export class ShoppinglistService {
@@ -12,7 +14,8 @@ export class ShoppinglistService {
   public startedEditing: Subject<number> = new Subject<number>();
 
   public constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService
   ) {
   }
 
@@ -26,7 +29,6 @@ export class ShoppinglistService {
   }
 
   addIngredients(ingredients: Ingredient[]) {
-    console.log(this.ingredients);
     for (let ingredient of ingredients.slice()) {
       let foundIngredient = this.ingredients.find(t => t.name == ingredient.name);
       if (foundIngredient) {
@@ -45,23 +47,21 @@ export class ShoppinglistService {
   }
 
   saveData() {
-    this.http.put<Recipe[]>(
-      "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/ingredients.json",
-      this.ingredients
+    return this.http.put<Recipe[]>(
+      "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/ingredients.json?",
+      this.ingredients,
     ).subscribe(result => {
-      console.log(result);
     });
   }
 
   fetchData() {
     return this.http.get<Ingredient[]>(
       "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/ingredients.json",
+    ).pipe(
+      tap((result: Ingredient[]) => {
+        this.ingredients = result ?? [];
+        this.ingredientsChangedSubject.next(this.getIngredients());
+      })
     )
-      .pipe(
-        tap((result: Ingredient[]) => {
-          this.ingredients = result ?? [];
-          this.ingredientsChangedSubject.next(this.getIngredients());
-        })
-      );
   }
 }

@@ -1,7 +1,9 @@
 import {Recipe} from "./recipe.model";
 import {Injectable} from "@angular/core";
-import {map, Subject, tap} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {exhaustMap, map, Subject, take, tap} from "rxjs";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {AuthService} from "../auth/auth.service";
+import {UserModel} from "../auth/user.model";
 
 @Injectable()
 export class RecipeService {
@@ -9,7 +11,8 @@ export class RecipeService {
   private recipes: Recipe[] = [];
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService
   ) {
   }
 
@@ -38,31 +41,45 @@ export class RecipeService {
   }
 
   saveData() {
-    this.http.put<Recipe[]>(
-      "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/recipes.json",
-      this.recipes
-    ).subscribe(result => {
-      console.log(result);
-    });
+    return this.authService.user.pipe(
+      take(1),
+      exhaustMap((user: UserModel | null) => {
+        return this.http.put<Recipe[]>(
+          "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/recipes.json?",
+          this.recipes,
+          {
+            params: new HttpParams().set('auth', user ? user.token.toString() : '')
+          }
+        );
+      })).subscribe(result => {
+      }
+    )
   }
 
   fetchData() {
-    return this.http.get<Recipe[]>(
-      "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/recipes.json",
-    )
-      .pipe(
-        map(result => {
-          return result.map(recipe => {
-            return {
-              ...recipe,
-              ingredients: recipe.ingredients? recipe.ingredients: [],
+    return this.authService.user.pipe(
+      take(1),
+      exhaustMap((user: UserModel | null) => {
+          return this.http.get<Recipe[]>(
+            "https://ng-complete-guide-404408-default-rtdb.europe-west1.firebasedatabase.app/recipes.json",
+            {
+              params: new HttpParams().set('auth', user ? user.token.toString() : '')
             }
-          });
-        }),
-        tap((result: Recipe[]) => {
-          this.recipes = result;
-          this.recipeListUpdated.next(true);
-        })
-      );
+          )
+        }
+      ),
+      map(result => {
+        return result.map(recipe => {
+          return {
+            ...recipe,
+            ingredients: recipe.ingredients ? recipe.ingredients : [],
+          }
+        });
+      }),
+      tap((result: Recipe[]) => {
+        this.recipes = result;
+        this.recipeListUpdated.next(true);
+      }),
+    );
   }
 }
