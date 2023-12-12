@@ -31,3 +31,4 @@ jobs:
        make k8s-deploy-prod
       env:
        K8S_NAMESPACE: ${{secrets.K8S_PROD_NAMESPACE}}
+       FIREBASE_API_KEY: ${{secrets.FIREBASE_API_KEY}}

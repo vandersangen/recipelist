@@ -1,13 +1,20 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <div class="alert alert-danger" *ngIf="this.error != null">
-      <p>{{this.error}}</p>
-    </div>
+<!--    <div class="alert alert-danger" *ngIf="this.error != null">-->
+<!--      <p>{{this.error}}</p>-->
+<!--    </div>-->
+
+<!--    <app-alert [message]="this.error" *ngIf="this.error" (close)="this.onHandleError()"></app-alert>-->
+
+    <ng-template appPlaceholder></ng-template>
+
 
     <div class="text-center">
       <app-loading-spinner *ngIf="this.isLoading === true"/>
     </div>
+
+
 
     <form #form=ngForm (ngSubmit)="this.submit(form)" *ngIf="this.isLoading === false">
       <div class="form-group">
