@@ -75,11 +75,10 @@ docker-push-frontend:
 	$(DOCKER) push larsvandersangen/recipelist
 
 prepare-env:
-	@$(ANGULAR_CONTAINER) sed -i 's/\[firebaseApiKey\]/$(FIREBASE_API_KEY)/g' ./src/environments/environment.ts
+	sed -i 's/\[firebaseApiKey\]/$(FIREBASE_API_KEY)/g' ./src/environments/environment.ts
 
 ## —— Kubernetes  🐙  ————————————————————————————————————————————————————————————————
 k8s-deploy-prod:
-	prepare-env
 	kubectl apply -f ./k8s/recipelist-prod -n $(K8S_NAMESPACE)
 	# Enforce restart for the pods
 	kubectl rollout restart -f ./k8s/recipelist-prod/recipelist-deployment.yaml -n $(K8S_NAMESPACE)

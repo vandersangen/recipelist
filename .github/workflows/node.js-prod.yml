@@ -4,31 +4,33 @@ name: Node.js CI - prod
 
 on:
   push:
-    branches:  ['main']
+    branches: [ 'main' ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - run: make up-frontend
-#     - run: make test
+      - run: |
+          make prepare-env
+          make up-frontend
+        env:
+          FIREBASE_API_KEY: ${{secrets.FIREBASE_API_KEY}}
 
-    - name: Docker compose push
-      run: |
-        docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        make docker-push-frontend
+      - name: Docker compose push
+        run: |
+          docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          make docker-push-frontend
 
-    - name: Set k8s kubeconfig file
-      uses: qgxpagamentos/kubectl-set@v1
-      with:
-       # A base64 encoded reference to your authorization file (~/.kube/config)
-       base64-kube-config: ${{ secrets.K8S_KUBE_CONFIG }}
+      - name: Set k8s kubeconfig file
+        uses: qgxpagamentos/kubectl-set@v1
+        with:
+          # A base64 encoded reference to your authorization file (~/.kube/config)
+          base64-kube-config: ${{ secrets.K8S_KUBE_CONFIG }}
 
-    - name: Deploy to k8s
-      run: |
-       make k8s-deploy-prod
-      env:
-       K8S_NAMESPACE: ${{secrets.K8S_PROD_NAMESPACE}}
-       FIREBASE_API_KEY: ${{secrets.FIREBASE_API_KEY}}
+      - name: Deploy to k8s
+        run: |
+          make k8s-deploy-prod
+        env:
+          K8S_NAMESPACE: ${{secrets.K8S_PROD_NAMESPACE}}
