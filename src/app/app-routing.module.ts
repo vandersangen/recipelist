@@ -1,46 +1,40 @@
-import {Route, Router, RouterModule} from "@angular/router";
-import {AppComponent} from "./app.component";
-import {RecipeBookComponent} from "./recipe-book/recipe-book.component";
-import {DetailComponent as RecipeBookDetailComponent} from "./recipe-book/detail/detail.component";
-import {ShoppingListComponent} from "./shopping-list/shopping-list.component";
-import {EditComponent as ShoppingListEditComponent} from "./shopping-list/edit/edit.component";
+import {PreloadAllModules, Route, RouterModule} from "@angular/router";
 import {NgModule} from "@angular/core";
-import {RecipeEditComponent} from "./recipe-book/recipe-edit/recipe-edit.component";
-import {RecipesResolverService} from "./recipe-book/recipes-resolver.service";
-import {ShoppinglistResolverService} from "./shopping-list/shoppinglist-resolver.service";
-import {ShoppinglistService} from "./shopping-list/shoppinglist.service";
-import {AuthComponent} from "./auth/auth.component";
-import {AuthGuard} from "./auth/auth.guard";
+import {ShoppingListModule} from "./shopping-list/shopping-list.module";
 
 
 const routes: Route[] = [
-  {path: '', redirectTo: 'recipe-book', pathMatch: 'full'},
+  {path: '', redirectTo: 'recipe-book', pathMatch: 'full',},
   {
     path: 'recipe-book',
-    canActivate: [AuthGuard],
-    component: RecipeBookComponent,
-    resolve: [RecipesResolverService, ShoppinglistResolverService],
-    children: [
-      {path: 'add', component: RecipeEditComponent},
-      {path: ':index/edit', component: RecipeEditComponent},
-      {path: ':index', component: RecipeBookDetailComponent}
-    ]
+    loadChildren: () => {
+      return import('./recipe-book/recipes.module').then(m => m.RecipesModule);
+    }
   },
   {
     path: 'shopping-list',
-    canActivate: [AuthGuard],
-    component: ShoppingListComponent,
-    resolve: [ShoppinglistResolverService, RecipesResolverService],
+    loadChildren: () => {
+      return import('./shopping-list/shopping-list.module').then(m => m.ShoppingListModule);
+    }
   },
   {
     path: 'auth',
-    component: AuthComponent,
+    loadChildren: () => {
+      return import('./auth/auth.module').then(m => m.AuthModule);
+    }
   }
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(
+      routes,
+      {
+        // Download lazy-loaded modules after initial download
+        // Useful for (very) slow internet connections
+        preloadingStrategy: PreloadAllModules
+      }
+    )
   ],
   exports: [RouterModule],
 })

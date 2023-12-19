@@ -5,7 +5,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
 import {UserModel} from "../auth/user.model";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class RecipeService {
   public recipeListUpdated = new Subject();
   private recipes: Recipe[] = [];
